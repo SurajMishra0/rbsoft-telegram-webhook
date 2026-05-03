@@ -33,14 +33,9 @@ def handle_webhook():
     if not data:
         return jsonify({"error": "No data"}), 400
     
-    event_type = data.get('event', 'unknown')
-    
-    if event_type == 'message.received':
-        message = f"📨 New SMS!\nFrom: {data.get('from')}\nMessage: {data.get('text')}"
-    elif event_type == 'call.added':
-        message = f"📞 Call!\nFrom: {data.get('from')}"
-    else:
-        message = f"Event: {event_type}\n{json.dumps(data, indent=2)}"
+    # Dump full raw payload so we can see actual field names
+    raw_dump = json.dumps(data, indent=2, default=str)
+    message = f"📨 Raw Webhook Data:\n\n{raw_dump}"
     
     send_telegram_message(message)
     return jsonify({"status": "ok"}), 200
